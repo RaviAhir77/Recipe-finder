@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { ApiConnection } from '../connection/ApiConnection';
+import '../css/Ingrediant.css'
 
 const Ingrediant = () => {
   const [ingrediants, setIngrediants] = useState('');
   const [recipes, setRecipes] = useState([]);
   const [error, setError] = useState('');
+  const [isSearched,setIsSearched] = useState(false)
 
   const handleSearch = async () => {
 
@@ -12,6 +14,7 @@ const Ingrediant = () => {
         return setError('please enter ingrediants')
     }
     try {
+      setIsSearched(true)
       setError('');
       const data = await ApiConnection(ingrediants);
       console.log('API Response:', data)
@@ -22,6 +25,7 @@ const Ingrediant = () => {
         setError('No recipes found. Try a different search!');
       }
     } catch (error) {
+      setIsSearched(false)
       setError(error.message);
       console.log('handleSearch: Error', error);
     }
@@ -29,7 +33,7 @@ const Ingrediant = () => {
 
   return (
     <div className='ingrediant'>
-      <h1>Search recipe form ingredients</h1>
+      <h1>Search recipe from ingredients</h1>
 
       <div className='search-ingrediants'>
         <input
@@ -44,15 +48,15 @@ const Ingrediant = () => {
       <div className='error-section'>{error}</div>
 
       <div className='recipe-response'>
-        {recipes.length > 0 ? (
+        {isSearched && recipes.length == 0 ? (
+            <p>No recipes found. Try a different search!</p>
+        ) : (
           recipes.map((recipe) => (
-            <div key={recipe.id}>
-              <h1>{recipe.title}</h1>
+            <div key={recipe.id} className='single-recipe'> 
+              <h3>{recipe.title}</h3>
               <img src={recipe.image} alt={recipe.title} />
             </div>
           ))
-        ) : (
-          <p>No recipes found. Try a different search!</p>
         )}
       </div>
     </div>
