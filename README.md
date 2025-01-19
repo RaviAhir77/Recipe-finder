@@ -1,0 +1,1 @@
+Just simple application for a find a recipe with a using a spoonacular API
